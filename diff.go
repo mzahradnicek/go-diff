@@ -20,9 +20,9 @@ type arlist map[*path]interface{}
 type modlist map[*path]update
 
 type diff struct {
-	Added    arlist         `json:"added"`
-	Removed  arlist         `json:"removed"`
-	Modified modlist        `json:"modified"`
+	Added    arlist         `json:"added,omitempty"`
+	Removed  arlist         `json:"removed,omitempty"`
+	Modified modlist        `json:"modified,omitempty"`
 	visited  map[visit]bool `json:"-"`
 }
 
