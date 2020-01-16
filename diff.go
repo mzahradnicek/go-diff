@@ -20,9 +20,10 @@ type arlist map[*path]interface{}
 type modlist map[*path]update
 
 type diff struct {
-	Added, Removed arlist
-	Modified       modlist
-	visited        map[visit]bool `json:"-"`
+	Added    arlist         `json:"added"`
+	Removed  arlist         `json:"removed"`
+	Modified modlist        `json:"modified"`
+	visited  map[visit]bool `json:"-"`
 }
 
 func (d *diff) diff(aVal, bVal reflect.Value, p path, opts *opts) bool {
@@ -153,7 +154,11 @@ func (d *diff) diff(aVal, bVal reflect.Value, p path, opts *opts) bool {
 			for i := 0; i < typ.NumField(); i++ {
 				index := []int{i}
 				field := typ.FieldByIndex(index)
+
 				if field.Tag.Get("testdiff") == "ignore" { // skip fields marked to be ignored
+					continue
+				}
+				if field.PkgPath != "" {
 					continue
 				}
 				if _, skip := opts.ignoreFields[field.Name]; skip {
